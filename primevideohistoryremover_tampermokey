@@ -1,0 +1,74 @@
+// ==UserScript==
+// @name         Remove Prime Video Watch History with Floating Button
+// @namespace    http://tampermonkey.net/
+// @version      1.0
+// @description  Adds a floating button to remove all items from your Prime Video watch history with scrolling support
+// @author       whmcfg
+// @match        https://www.primevideo.com/*
+// @grant        none
+// @license      GNU GPLv3
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    // Create a floating button
+    const button = document.createElement('button');
+    button.innerText = 'Remove Watch History';
+    button.style.position = 'fixed';
+    button.style.bottom = '20px';
+    button.style.right = '20px';
+    button.style.padding = '10px 20px';
+    button.style.fontSize = '16px';
+    button.style.zIndex = '1000';
+    button.style.backgroundColor = '#ff9900';
+    button.style.color = '#fff';
+    button.style.border = 'none';
+    button.style.borderRadius = '5px';
+    button.style.cursor = 'pointer';
+    button.style.boxShadow = '0 2px 5px rgba(0,0,0,0.3)';
+
+    document.body.appendChild(button);
+
+    button.addEventListener('click', function() {
+        button.disabled = true;
+        button.innerText = 'Removing...';
+
+        function removeAllWatchHistory() {
+            let lastHeight = 0;
+
+            function clickAndScroll() {
+                // Select all removal buttons by their class name
+                const removeButtons = document.querySelectorAll('button.SPqQmU._3RF4FN._1D7HW3._2G6lpB.pU0yt1');
+
+                // Click each button with a delay
+                removeButtons.forEach((button, index) => {
+                    setTimeout(() => {
+                        button.click();
+                        console.log(`Removed item ${index + 1} of ${removeButtons.length}`);
+                    }, index * 100);
+                });
+
+                // Scroll down after clicking all visible buttons
+                setTimeout(() => {
+                    window.scrollBy(0, document.body.scrollHeight);
+                    let newHeight = document.body.scrollHeight;
+                    if (newHeight > lastHeight) {
+                        lastHeight = newHeight;
+                        console.log("Scrolled down to load more videos...");
+                        setTimeout(clickAndScroll, 2000); // Wait for new items to load
+                    } else {
+                        console.log("All items removed from watch history.");
+                        button.innerText = 'Done!';
+                    }
+                }, removeButtons.length * 100 + 500); // Wait for all clicks to complete before scrolling
+            }
+
+            // Start the process
+            clickAndScroll();
+        }
+
+        // Call the function to remove all items
+        removeAllWatchHistory();
+    });
+})();
