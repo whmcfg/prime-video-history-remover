@@ -7,4 +7,4 @@ There are two versions, console and tampermonkey. The first one must be copied a
 
 It worked in my account, in two locations, in two profiles. 
 
-If it doesn't work for you, it might be that the buttons' class varies. In this case, inspect the page and check the one for you. Then edit the code in lines 6 or 42, respectively.
+If it doesn't work for you, it might be that the buttons' class varies. In this case, inspect the page and check the one for you. Then edit the code in lines 6 or 46, respectively.
